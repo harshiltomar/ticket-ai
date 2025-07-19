@@ -8,7 +8,7 @@ export const onUserSignup = inngest.createFunction(
     { event: "user/signup" },
     async ({ event, step }) => {
         try {
-            const { email, name } = event.data;
+            const { email } = event.data;
             const user = await step.run("get-user-email", async () => {
 
                 const userObject = await User.findOne({ email });
@@ -21,7 +21,7 @@ export const onUserSignup = inngest.createFunction(
 
             await step.run("send-welcome-email", async () => {
                 const subject = `Welcome to the ticket system`;
-                const text = `Dear ${name},\n\nWelcome to the ticket system! We're thrilled to have you on board. This is the first step towards a seamless ticketing experience. If you have any questions or need assistance, please don't hesitate to reach out.\n\nBest regards,\nThe Ticket System Team`;
+                const text = `Dear User,\n\nWelcome to the ticket system! We're thrilled to have you on board. This is the first step towards a seamless ticketing experience. If you have any questions or need assistance, please don't hesitate to reach out.\n\nBest regards,\nThe Ticket System Team`;
                 await sendEmail(user.email, subject, text);
             })
             
