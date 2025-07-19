@@ -1,14 +1,14 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../models/user";
-import { inngest } from "../inngest/client";
+import User from "../models/user.js";
+import { inngest } from "../inngest/client.js";
 
 export const signup = async (req, res) => {
     const { email, password, skills = [] } = req.body;
 
     try {
-        const hashed = bcrypt.hash(password, 10);
-        const user = User.create({ email, password: hashed, skills });
+        const hashed = await bcrypt.hash(password, 10);
+        const user = await User.create({ email, password: hashed, skills });
 
         // Fire the ingest event
         await inngest.send({
@@ -76,7 +76,7 @@ export const updateUser = async (req, res) => {
     const { skills = [], role, email } = req.body;
     try {
         if (req.user?.role !== "admin") {
-            return res.status(403).json({ eeor: "Forbidden" });
+            return res.status(403).json({ error: "Forbidden" });
         }
         const user = await User.findOne({ email });
         if (!user) return res.status(401).json({ error: "User not found" });
